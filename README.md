@@ -1,13 +1,13 @@
 # Nanopore Analysis of Mined LSR 
 
-Code used to quantify the enrichment of computationally mined
+code used to quantify the enrichment of computationally mined
 large serine recombinase (LSR) variants following selection. Pre-selection
 ("input") and post-selection ("output") libraries were sequenced on a MinION
 Mk1D. Enrichment was calculated per variant.
 
-## Enrichment metric
+## Enrichment 
 
-For each screened LSR *j*, enrichment is calculated relative to the BxB1 dead
+for each screened LSR *j*, enrichment is calculated relative to the BxB1 dead
 control:
 
 ```
@@ -38,9 +38,9 @@ dorado download --model dna_r10.4.1_e8.2_400bps_sup@v4.2.0
 
 ## Pipeline
 
-Replace `run1` with run identifier.
+replace `run1` with run identifier.
 
-### 1. Basecalling
+### 1. basecall
 
 ```bash
 mkdir -p ~/nanopore_data/run1
@@ -49,9 +49,9 @@ dorado basecaller dna_r10.4.1_e8.2_400bps_sup@v4.2.0 path/to/pod5/ \
     > ~/nanopore_data/run1/calls.bam
 ```
 
-### 2. Demultiplexing
+### 2. demultiplex
 
-Split the basecalled reads into one FASTQ per barcode:
+split the basecalled reads into one FASTQ per barcode:
 
 ```bash
 dorado demux --kit-name SQK-NBD114-24 --emit-fastq \
@@ -59,14 +59,14 @@ dorado demux --kit-name SQK-NBD114-24 --emit-fastq \
     ~/nanopore_data/run1/calls.bam
 ```
 
-### 3. Read QC
+### 3. read QC
 
 ```bash
 NanoPlot --fastq ~/nanopore_data/run1/demux/SAMPLE.fastq \
     --outdir ~/nanopore_data/run1/nanoplot
 ```
 
-### 4. Length & quality filtering
+### 4. filter Reads 
 
 ```bash
 python scripts/filter_reads.py \
@@ -76,9 +76,9 @@ python scripts/filter_reads.py \
     --min_len 1600 --max_len 2200 --min_qual 20
 ```
 
-### 5. Alignment 
+### 5. align
 
-Align each library (input and output) to the candidate reference, then sort
+align each library (input and output) to the candidate reference, then sort
 and index. Here shown for input ->> repeat for output.
 
 ```bash
@@ -88,7 +88,7 @@ samtools sort input.sam -o input.sorted.bam
 samtools index input.sorted.bam
 ```
 
-### 6. Read counting & enrichment
+### 6. count reads and compute enrichment
 
 ```bash
 python scripts/compute_enrichment.py \
@@ -98,7 +98,7 @@ python scripts/compute_enrichment.py \
     --output-csv enrichment_results.csv
 ```
 
-## Barcode file
+## barcode file
 
 `compute_enrichment.py` reads barcode-to-construct assignments from a CSV.
 `data/barcodes_template.csv` shows the required format (with placeholder IDs
@@ -106,5 +106,5 @@ and sequences).
 
 ## Data availability
 
-Raw POD5 files, basecalled/aligned reads, candidate lsr reference amino acid fastas are not included in this
+raw POD5 files, basecalled/aligned reads, candidate lsr reference amino acid fastas are not included in this
 repository due to IP reasons.
