@@ -98,7 +98,7 @@ python scripts/compute_enrichment.py \
     --output-csv enrichment_results.csv
 ```
 
-## barcode file
+## Barcode file
 
 `compute_enrichment.py` reads barcode-to-construct assignments from a CSV.
 `data/barcodes_template.csv` shows the required format (with placeholder IDs
