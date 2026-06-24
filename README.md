@@ -106,5 +106,5 @@ and sequences).
 
 ## Data availability
 
-Raw POD5 files and basecalled/aligned reads are not included in this
-repository due to IP reasons
+Raw POD5 files, basecalled/aligned reads, candidate lsr reference amino acid fastas are not included in this
+repository due to IP reasons.
