@@ -1,10 +1,9 @@
-# LSR Enrichment — Nanopore Analysis
+# Nanopore Analysis of Mined LSR 
 
-Code and pipeline used to quantify the enrichment of computationally mined
+Code used to quantify the enrichment of computationally mined
 large serine recombinase (LSR) variants following selection. Pre-selection
 ("input") and post-selection ("output") libraries were sequenced on a MinION
-Mk1D, and enrichment was calculated per candidate variant from the resulting
-read counts.
+Mk1D. Enrichment was calculated per variant.
 
 ## Enrichment metric
 
@@ -16,48 +15,16 @@ enrichment_j = log2( (count_j,output / count_dead,output)
                      / (count_j,input  / count_dead,input) )
 ```
 
-## Pipeline overview
-
-| Step | Tool | Custom code? |
-|------|------|--------------|
-| 1. Basecalling | Dorado v1.4.0 (r10.4.1 model) | external |
-| 2. Demultiplexing | Dorado demux (SQK-NBD114-24) | external |
-| 3. Read QC | NanoPlot / FastQC | external |
-| 4. Length & quality filtering | `scripts/filter_reads.py` | **yes** |
-| 5. Alignment | minimap2 v2.26 (`-ax map-ont`) | external |
-| 6. SAM → sorted/indexed BAM | samtools v1.17 | external |
-| 7. Read counting & enrichment | `scripts/compute_enrichment.py` | **yes** |
-
-## Repository structure
-
-```
-lsr-enrichment-nanopore/
-├── README.md
-├── environment.yml
-├── data/
-│   ├── reference/
-│   │   └── candidate_lsr_reference.fasta   # 367 candidate LSRs + BxB1 dead control
-│   ├── barcodes_template.csv               # format only; no real sequences
-│   └── README.md
-├── scripts/
-│   ├── filter_reads.py
-│   └── compute_enrichment.py
-└── results/
-    └── enrichment_results.csv              # example output
-```
-
 ## Setup
 
-Create the analysis environment (everything except Dorado):
+Create the analysis environment:
 
 ```bash
 mamba env create -f environment.yml
 mamba activate nanopore
 ```
 
-Dorado is installed separately from Oxford Nanopore. Use the build that
-matches your operating system (the example below is for Apple Silicon macOS;
-see https://github.com/nanoporetech/dorado for other builds):
+Install Dorado:
 
 ```bash
 curl -L "https://cdn.oxfordnanoportal.com/software/analysis/dorado-1.4.0-osx-arm64.zip" -o dorado.zip
@@ -65,13 +32,13 @@ unzip dorado.zip
 export PATH="$PWD/dorado-1.4.0-osx-arm64/bin:$PATH"
 dorado --version
 
-# One-time basecalling model download
+# download basecalling model
 dorado download --model dna_r10.4.1_e8.2_400bps_sup@v4.2.0
 ```
 
-## Running the pipeline
+## Pipeline
 
-Replace `run1` with your own run identifier throughout.
+Replace `run1` with run identifier.
 
 ### 1. Basecalling
 
@@ -84,7 +51,7 @@ dorado basecaller dna_r10.4.1_e8.2_400bps_sup@v4.2.0 path/to/pod5/ \
 
 ### 2. Demultiplexing
 
-Split the basecalled reads into one FASTQ per barcode (one per sample):
+Split the basecalled reads into one FASTQ per barcode:
 
 ```bash
 dorado demux --kit-name SQK-NBD114-24 --emit-fastq \
@@ -109,16 +76,10 @@ python scripts/filter_reads.py \
     --min_len 1600 --max_len 2200 --min_qual 20
 ```
 
-Optionally re-run FastQC on the filtered output:
-
-```bash
-fastqc ~/nanopore_data/run1/filtered/filtered_SAMPLE.fastq.gz
-```
-
-### 5. Alignment + sorted/indexed BAM
+### 5. Alignment 
 
 Align each library (input and output) to the candidate reference, then sort
-and index. Shown here for the input library; repeat for the output library.
+and index. Here shown for input ->> repeat for output.
 
 ```bash
 minimap2 -ax map-ont data/reference/candidate_lsr_reference.fasta \
@@ -134,20 +95,16 @@ python scripts/compute_enrichment.py \
     --input-bam input.sorted.bam \
     --output-bam output.sorted.bam \
     --barcodes barcodes.csv \
-    --output-csv results/enrichment_results.csv
+    --output-csv enrichment_results.csv
 ```
 
 ## Barcode file
 
 `compute_enrichment.py` reads barcode-to-construct assignments from a CSV.
 `data/barcodes_template.csv` shows the required format (with placeholder IDs
-and sequences). To run the analysis, copy it to `barcodes.csv`, fill in the
-real construct IDs, barcode sequences, and roles (`standard`, `gblock`, or
-`dead_control`), and keep that file local — it is git-ignored so that no
-proprietary sequences are published.
+and sequences).
 
 ## Data availability
 
 Raw POD5 files and basecalled/aligned reads are not included in this
-repository due to their size. [Add a link to your data repository — e.g.
-ENA/SRA accession or Zenodo DOI — here.]
+repository due to IP reasons
