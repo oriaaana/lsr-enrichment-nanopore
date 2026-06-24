@@ -1,10 +1,9 @@
-# LSR Enrichment — Nanopore Analysis
+# Nanopore Analysis of Mined LSR 
 
-Code and pipeline used to quantify the enrichment of computationally mined
+Code used to quantify the enrichment of computationally mined
 large serine recombinase (LSR) variants following selection. Pre-selection
 ("input") and post-selection ("output") libraries were sequenced on a MinION
-Mk1D, and enrichment was calculated per candidate variant from the resulting
-read counts.
+Mk1D. Enrichment was calculated per variant.
 
 ## Enrichment metric
 
