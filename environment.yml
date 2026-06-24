@@ -1,0 +1,16 @@
+name: nanopore
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  - minimap2=2.26
+  - samtools=1.17
+  - fastqc
+  - nanoplot
+  - pysam
+  - pandas
+  - numpy
+  - biopython
+# NOTE: Dorado (v1.4.0) is installed separately from Oxford Nanopore,
+# not via conda. See the README for the install command.
