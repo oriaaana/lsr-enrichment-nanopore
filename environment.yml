@@ -12,5 +12,4 @@ dependencies:
   - pandas
   - numpy
   - biopython
-# NOTE: Dorado (v1.4.0) is installed separately from Oxford Nanopore,
-# not via conda. See the README for the install command.
+# Dorado (v1.4.0) is installed separately from Oxford Nanopore.
