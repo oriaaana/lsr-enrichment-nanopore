@@ -55,9 +55,7 @@ mamba env create -f environment.yml
 mamba activate nanopore
 ```
 
-Dorado is installed separately from Oxford Nanopore. Use the build that
-matches your operating system (the example below is for Apple Silicon macOS;
-see https://github.com/nanoporetech/dorado for other builds):
+Install Dorado:
 
 ```bash
 curl -L "https://cdn.oxfordnanoportal.com/software/analysis/dorado-1.4.0-osx-arm64.zip" -o dorado.zip
@@ -65,13 +63,13 @@ unzip dorado.zip
 export PATH="$PWD/dorado-1.4.0-osx-arm64/bin:$PATH"
 dorado --version
 
-# One-time basecalling model download
+# download basecalling model
 dorado download --model dna_r10.4.1_e8.2_400bps_sup@v4.2.0
 ```
 
 ## Running the pipeline
 
-Replace `run1` with your own run identifier throughout.
+Replace `run1` with run identifier.
 
 ### 1. Basecalling
 
@@ -84,7 +82,7 @@ dorado basecaller dna_r10.4.1_e8.2_400bps_sup@v4.2.0 path/to/pod5/ \
 
 ### 2. Demultiplexing
 
-Split the basecalled reads into one FASTQ per barcode (one per sample):
+Split the basecalled reads into one FASTQ per barcode:
 
 ```bash
 dorado demux --kit-name SQK-NBD114-24 --emit-fastq \
@@ -109,16 +107,10 @@ python scripts/filter_reads.py \
     --min_len 1600 --max_len 2200 --min_qual 20
 ```
 
-Optionally re-run FastQC on the filtered output:
-
-```bash
-fastqc ~/nanopore_data/run1/filtered/filtered_SAMPLE.fastq.gz
-```
-
-### 5. Alignment + sorted/indexed BAM
+### 5. Alignment 
 
 Align each library (input and output) to the candidate reference, then sort
-and index. Shown here for the input library; repeat for the output library.
+and index. Here shown for input ->> repeat for output.
 
 ```bash
 minimap2 -ax map-ont data/reference/candidate_lsr_reference.fasta \
@@ -141,10 +133,7 @@ python scripts/compute_enrichment.py \
 
 `compute_enrichment.py` reads barcode-to-construct assignments from a CSV.
 `data/barcodes_template.csv` shows the required format (with placeholder IDs
-and sequences). To run the analysis, copy it to `barcodes.csv`, fill in the
-real construct IDs, barcode sequences, and roles (`standard`, `gblock`, or
-`dead_control`), and keep that file local — it is git-ignored so that no
-proprietary sequences are published.
+and sequences).
 
 ## Data availability
 
