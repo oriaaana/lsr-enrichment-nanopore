@@ -149,5 +149,4 @@ proprietary sequences are published.
 ## Data availability
 
 Raw POD5 files and basecalled/aligned reads are not included in this
-repository due to their size. [Add a link to your data repository — e.g.
-ENA/SRA accession or Zenodo DOI — here.]
+repository due to IP reasons
