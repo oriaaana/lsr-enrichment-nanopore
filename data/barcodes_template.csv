@@ -1,0 +1,7 @@
+construct_id,barcode,role
+construct_001,NNNNNNNNNNNNNNNNNNNNNNNNN,standard
+construct_002,NNNNNNNNNNNNNNNNNNNNNNNNN,standard
+construct_003,NNNNNNNNNNNNNNNNNNNNNNNNN,standard
+construct_004,,gblock
+construct_005,,gblock
+construct_006,NNNNNNNNNNNNNNNNNNNNNNNNN,dead_control
