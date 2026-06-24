@@ -48,7 +48,7 @@ lsr-enrichment-nanopore/
 
 ## Setup
 
-Create the analysis environment (everything except Dorado):
+Create the analysis environment:
 
 ```bash
 mamba env create -f environment.yml
