@@ -16,36 +16,6 @@ enrichment_j = log2( (count_j,output / count_dead,output)
                      / (count_j,input  / count_dead,input) )
 ```
 
-## Pipeline overview
-
-| Step | Tool | Custom code? |
-|------|------|--------------|
-| 1. Basecalling | Dorado v1.4.0 (r10.4.1 model) | external |
-| 2. Demultiplexing | Dorado demux (SQK-NBD114-24) | external |
-| 3. Read QC | NanoPlot / FastQC | external |
-| 4. Length & quality filtering | `scripts/filter_reads.py` | **yes** |
-| 5. Alignment | minimap2 v2.26 (`-ax map-ont`) | external |
-| 6. SAM → sorted/indexed BAM | samtools v1.17 | external |
-| 7. Read counting & enrichment | `scripts/compute_enrichment.py` | **yes** |
-
-## Repository structure
-
-```
-lsr-enrichment-nanopore/
-├── README.md
-├── environment.yml
-├── data/
-│   ├── reference/
-│   │   └── candidate_lsr_reference.fasta   # 367 candidate LSRs + BxB1 dead control
-│   ├── barcodes_template.csv               # format only; no real sequences
-│   └── README.md
-├── scripts/
-│   ├── filter_reads.py
-│   └── compute_enrichment.py
-└── results/
-    └── enrichment_results.csv              # example output
-```
-
 ## Setup
 
 Create the analysis environment:
@@ -67,7 +37,7 @@ dorado --version
 dorado download --model dna_r10.4.1_e8.2_400bps_sup@v4.2.0
 ```
 
-## Running the pipeline
+## Pipeline
 
 Replace `run1` with run identifier.
 
