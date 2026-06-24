@@ -95,7 +95,7 @@ python scripts/compute_enrichment.py \
     --input-bam input.sorted.bam \
     --output-bam output.sorted.bam \
     --barcodes barcodes.csv \
-    --output-csv results/enrichment_results.csv
+    --output-csv enrichment_results.csv
 ```
 
 ## Barcode file
